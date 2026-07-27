@@ -348,6 +348,7 @@ A realistic target for 3 days:
 * Network: medium
 * Forensics: basic
 
-That is enough to score well in a beginner/intermediate national CTF.
+That is enough to score well in a beginner/intermediate national CTF.   
 
+tshark -r challenge.pcapng -Y "arp" -T fields -e frame.number -e arp.src.hw_mac -e arp.src.proto_ip -e arp.opcode
 
